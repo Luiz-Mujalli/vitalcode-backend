@@ -1,0 +1,26 @@
+
+# Dependências
+node_modules/
+
+# Variáveis de ambiente
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+
+# Arquivos temporários
+tmp/
+temp/
+coverage/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Configurações locais do editor
+.vscode/
+.idea/

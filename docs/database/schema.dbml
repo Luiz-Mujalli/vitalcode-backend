@@ -1,0 +1,133 @@
+
+Table companies {
+  id integer [pk, increment]
+
+  nome varchar(150) [not null]
+  cnpj varchar(14) [unique, not null]
+  status varchar(20) [not null, default: 'pending']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table users {
+  id integer [pk, increment]
+
+  nome varchar(100) [not null]
+  sobrenome varchar(100) [not null]
+  data_nascimento date
+  email varchar(255) [not null, unique]
+  password_hash varchar(255) [not null]
+  foto_key varchar(255)
+  status varchar(20) [not null, default: 'pending']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+Table clinical_profiles {
+  id integer [pk, increment]
+
+  user_id integer [not null, unique, ref: - users.id]
+
+  tipo_sanguineo varchar(3)
+  alergias text
+  medicamentos text
+  doencas text
+  cirurgias text
+  contato_emergencia_nome varchar(150)
+  contato_emergencia_telefone varchar(20)
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+}
+
+
+
+Table company_memberships {
+  id integer [pk, increment]
+
+  user_id integer [not null, ref: > users.id]
+  company_id integer [not null, ref: > companies.id]
+
+  cargo varchar(100)
+  role varchar(20) [not null, default: 'employee']
+  status varchar(20) [not null, default: 'active']
+
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (user_id, company_id) [unique]
+    (company_id, status)
+  }
+}
+
+
+Table invitations {
+  id integer [pk, increment]
+
+  company_id integer [not null, ref: > companies.id]
+  invited_by integer [not null, ref: > users.id]
+
+  email varchar(255) [not null]
+  token_hash varchar(64) [not null, unique]
+  status varchar(20) [not null, default: 'pending']
+
+  expires_at datetime [not null]
+  accepted_at datetime
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+    (company_id, email)
+  }
+}
+
+Table emergency_credentials {
+  id integer [pk, increment]
+
+  membership_id integer [not null, ref: > company_memberships.id]
+
+  token_hash varchar(64) [not null, unique]
+  status varchar(20) [not null, default: 'inactive']
+
+  issued_at datetime [not null]
+  revoked_at datetime
+  created_at datetime [not null]
+  updated_at datetime [not null]
+
+  indexes {
+  (membership_id, status)
+  }
+}
+
+
+
+Table audit_logs {
+  id bigint [pk, increment]
+
+  company_id integer [null]
+  actor_user_id integer [null]
+  target_user_id integer [null]
+
+  action varchar(100) [not null]
+  resource_type varchar(50) [not null]
+  resource_id varchar(64)
+  ip_address varchar(45)
+  user_agent varchar(512)
+  metadata json
+
+  created_at datetime [not null]
+
+  indexes {
+    (company_id, created_at)
+    (actor_user_id, created_at)
+    (target_user_id, created_at)
+    (resource_type, resource_id)
+  }
+}
+
+Ref: audit_logs.company_id > companies.id
+Ref: audit_logs.actor_user_id > users.id
+Ref: audit_logs.target_user_id > users.id
