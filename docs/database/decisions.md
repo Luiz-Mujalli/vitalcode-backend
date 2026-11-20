@@ -89,3 +89,49 @@ A aplicação também deverá estabelecer controles contra alteração indevida 
 **Justificativa:** manter um histórico reproduzível da evolução do esquema e evitar alterações manuais não rastreadas.
 
 **Consequência:** futuras mudanças estruturais deverão ser realizadas por novas migrations, preservando o histórico já aplicado.
+
+## 11. Identidade global e autenticação independente de vínculos
+
+**Decisão:** permitir a autenticação de usuários ativos mesmo quando não possuem vínculos empresariais ativos.
+
+**Justificativa:** a identidade do usuário pertence à plataforma, enquanto os vínculos representam suas relações profissionais com empresas específicas.
+
+**Consequência:** a autenticação confirma a identidade global, mas não concede automaticamente permissões empresariais. Essas permissões devem ser verificadas separadamente para cada operação.
+
+Essa separação também permite que usuários autenticados aceitem convites para novas empresas.
+
+## 12. Autorização baseada no contexto empresarial
+
+**Decisão:** utilizar um middleware de autorização que valide a empresa solicitada, o vínculo ativo e o papel permitido antes da execução de operações administrativas.
+
+**Justificativa:** um usuário pode possuir papéis diferentes em empresas distintas. A autorização não deve depender de um papel global.
+
+**Consequência:** consultas e alterações administrativas devem utilizar a empresa autorizada como referência.
+
+A consulta individual de funcionários deve verificar o vínculo do funcionário com a empresa solicitada, evitando acesso a usuários de outras empresas por meio de identificadores conhecidos.
+
+## 13. Criação e aceitação transacional de convites
+
+**Decisão:** utilizar transações para coordenar a criação e a aceitação de convites empresariais.
+
+**Justificativa:** operações simultâneas podem causar inconsistências quando verificações e alterações são realizadas sem coordenação.
+
+**Consequência:** a implementação utiliza bloqueios transacionais e validações de estado para reduzir condições de corrida.
+
+Na aceitação, a criação ou reativação do vínculo e a atualização do convite devem ocorrer atomicamente.
+
+O token deve ser de uso único e somente o usuário autenticado com o e-mail correspondente ao convite pode aceitá-lo.
+
+Testes locais de concorrência foram realizados, mas a proteção completa ainda dependerá de testes automatizados e revisão dos demais fluxos de escrita.
+
+## 14. Restrição de privilégios na aceitação de convites
+
+**Decisão:** convites empresariais comuns concedem exclusivamente o papel `employee`.
+
+**Justificativa:** a criação de convites não deve permitir que administradores atribuam privilégios adicionais por meio de dados enviados pelo cliente.
+
+**Consequência:** o papel do vínculo é definido pelo servidor durante a aceitação.
+
+Quando um vínculo inativo é reativado por convite comum, o papel é definido como `employee`, mesmo que o vínculo anterior possuísse outro papel.
+
+A futura gestão de administradores deverá possuir regras próprias, incluindo a proteção contra remoção ou desativação do último administrador ativo da empresa.

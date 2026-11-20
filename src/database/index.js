@@ -35,6 +35,10 @@ class Database {
             .filter(model => typeof model.associate === 'function')
             .forEach(model => model.associate(this.connection.models));
     }
+
+    async authenticate() {
+        await this.connection.authenticate();
+    }
 }
 
 module.exports = new Database();

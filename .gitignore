@@ -24,3 +24,8 @@ Thumbs.db
 # Configurações locais do editor
 .vscode/
 .idea/
+
+# Testes na raiz do projeto
+/testAcceptInvitationConcurrency.js
+/testInvitationConcurrency.js
+/src/scripts/testRegisterCompanySchema.js

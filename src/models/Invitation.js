@@ -19,6 +19,11 @@ class Invitation extends Model {
                     allowNull: false,
                 },
 
+                cargo: {
+                    type: DataTypes.STRING(100),
+                    allowNull: true
+                },
+
                 token_hash: {
                     type: DataTypes.STRING(64),
                     allowNull: false,
