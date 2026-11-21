@@ -1,7 +1,11 @@
+// Imports
 const User = require('../models/User');
 const getActiveMembershipsService = require('./getActiveMembershipsService');
 const { verifyPassword } = require('./passwordService');
 
+// =====================================================================================
+
+// Main Function
 async function authService({ email, password }) {
     const user = await User.findOne({
         where: { email }
@@ -38,4 +42,7 @@ async function authService({ email, password }) {
     };
 }
 
+// =====================================================================================
+
+// Export
 module.exports = authService;

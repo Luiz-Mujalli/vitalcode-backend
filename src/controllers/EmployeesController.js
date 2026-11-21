@@ -1,6 +1,12 @@
+// Import - Método index
 const listCompanyEmployeesService = require('../services/listCompanyEmployeesService');
+
+// Import - Método show
 const getCompanyEmployeeService = require('../services/getCompanyEmployeeService');
 
+// ======================================================================================================
+
+// Método index
 exports.index = async (req, res) => {
     try {
         const search = req.query.search;
@@ -32,6 +38,9 @@ exports.index = async (req, res) => {
     }
 };
 
+// ======================================================================================================
+
+// Método show
 exports.show = async (req, res) => {
     const employeeId = Number(req.params.employeeId);
 

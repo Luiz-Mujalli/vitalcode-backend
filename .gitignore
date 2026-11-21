@@ -29,3 +29,4 @@ Thumbs.db
 /testAcceptInvitationConcurrency.js
 /testInvitationConcurrency.js
 /src/scripts/testRegisterCompanySchema.js
+/tests

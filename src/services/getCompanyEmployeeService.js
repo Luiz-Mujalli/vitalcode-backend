@@ -1,6 +1,10 @@
+// Imports
 const CompanyMembership = require('../models/CompanyMembership');
 const User = require('../models/User');
 
+// =====================================================================================
+
+// Main Function
 async function getCompanyEmployeeService(companyId, employeeId) {
     const membership = await CompanyMembership.findOne({
         where: {
@@ -46,4 +50,7 @@ async function getCompanyEmployeeService(companyId, employeeId) {
     };
 }
 
+// =====================================================================================
+
+// Export
 module.exports = getCompanyEmployeeService;

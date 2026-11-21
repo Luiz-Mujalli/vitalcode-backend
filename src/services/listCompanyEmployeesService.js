@@ -1,8 +1,12 @@
+// Imports
 const { Op } = require('sequelize');
 
 const CompanyMembership = require("../models/CompanyMembership")
 const User = require('../models/User');
 
+// =====================================================================================
+
+// Main Function
 async function listCompanyEmployeesService(companyId, search = '') {
     const userWhere = {};
 
@@ -62,4 +66,7 @@ async function listCompanyEmployeesService(companyId, search = '') {
     }));
 }
 
+// =====================================================================================
+
+// Export
 module.exports = listCompanyEmployeesService;

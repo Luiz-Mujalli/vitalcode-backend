@@ -1,6 +1,10 @@
+// Imports
 const User = require('../models/User');
 const getActiveMembershipsService = require('./getActiveMembershipsService');
 
+// =====================================================================================
+
+// Main Function
 async function getAuthenticatedUserService(userId) {
     const user = await User.findByPk(userId);
 
@@ -26,4 +30,7 @@ async function getAuthenticatedUserService(userId) {
     };
 }
 
+// =====================================================================================
+
+// Export
 module.exports = getAuthenticatedUserService;

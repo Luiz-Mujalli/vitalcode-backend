@@ -1,3 +1,4 @@
+// Imports
 const { Sequelize } = require('sequelize');
 
 const databaseConfig = require('../config/database');
@@ -9,6 +10,9 @@ const Invitation = require('../models/Invitation');
 const EmergencyCredential = require('../models/EmergencyCredential');
 const AuditLog = require('../models/AuditLog');
 
+// =====================================================================================
+
+// Models
 const models = [
     Company,
     User,
@@ -19,6 +23,9 @@ const models = [
     AuditLog
 ];
 
+// =====================================================================================
+
+// Main Class
 class Database {
     constructor() {
         this.init();
@@ -41,4 +48,7 @@ class Database {
     }
 }
 
+// =====================================================================================
+
+// Export
 module.exports = new Database();

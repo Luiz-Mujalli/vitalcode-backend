@@ -1,5 +1,9 @@
+// Imports
 const { Model, DataTypes } = require('sequelize');
 
+// =====================================================================================
+
+// Main Class
 class Company extends Model {
     static init(sequelize) {
         return super.init(
@@ -45,4 +49,7 @@ class Company extends Model {
     }
 }
 
+// =====================================================================================
+
+// Export
 module.exports = Company;

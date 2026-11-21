@@ -1,3 +1,4 @@
+// Imports
 const crypto = require('crypto');
 
 const { Op, Transaction } = require('sequelize');
@@ -9,6 +10,9 @@ const Invitation = require('../models/Invitation');
 const User = require('../models/User');
 const CompanyMembership = require('../models/CompanyMembership');
 
+// =====================================================================================
+
+// Main Function
 async function createInvitationService({
     companyId,
     invitedBy,
@@ -113,4 +117,7 @@ async function createInvitationService({
     });
 }
 
+// =====================================================================================
+
+// Export
 module.exports = createInvitationService;

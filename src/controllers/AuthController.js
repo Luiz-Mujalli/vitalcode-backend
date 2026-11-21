@@ -1,9 +1,19 @@
+// Config
 require('dotenv').config();
+
+// =====================================================================================
+
+// Imports - Método login
 const jwt = require('jsonwebtoken');
 const loginSchema = require('../validators/loginSchema');
 const authService = require('../services/authService');
+
+// Imports - Método me
 const getAuthenticatedUserService = require('../services/getAuthenticatedUserService');
 
+// ===========================================================================================================
+
+// Método login
 exports.login = async (req, res) => {
     const validation = loginSchema.safeParse(req.body);
 
@@ -52,6 +62,9 @@ exports.login = async (req, res) => {
     }
 };
 
+// ===========================================================================================================
+
+// Método me
 exports.me = async (req, res) => {
     try {
         const result = await getAuthenticatedUserService(

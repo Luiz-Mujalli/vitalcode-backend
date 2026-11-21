@@ -1,5 +1,9 @@
+// Imports
 const { z } = require('zod');
 
+// =====================================================================================
+
+// Main Schema
 const createInvitationSchema = z.object({
     email: z.string()
         .trim()
@@ -13,4 +17,7 @@ const createInvitationSchema = z.object({
         .optional()
 }).strict();
 
+// =====================================================================================
+
+// Export
 module.exports = createInvitationSchema;

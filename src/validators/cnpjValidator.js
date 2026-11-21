@@ -1,29 +1,27 @@
+// Main Function
 function validateCNPJ(cnpj) {
-    // TYPEOF VERIFICATION
     if (typeof cnpj !== 'string') {
         return false;
     }
 
-    // REMOVING PUNCTUATION
     const cleanedCNPJ = cnpj.replace(/[.\-/]/g, '');
 
-    // DIGITS VERIFICATION
     if (!/^\d{14}$/.test(cleanedCNPJ)) {
         return false;
     }
 
-    // SEQUENCE VERIFICATION
     if (/^(\d)\1{13}$/.test(cleanedCNPJ)) {
         return false;
     }
 
-    // CONVERTING IN ARRAY
     const digits = cleanedCNPJ.split('').map(Number);
 
-    // RESULT
     return verifyDigit(digits);
 }
 
+// =====================================================================================
+
+// verifyDigit Function
 function verifyDigit(cnpj) {
     const d1 = cnpj[12];
     const d2 = cnpj[13];
@@ -43,6 +41,9 @@ function verifyDigit(cnpj) {
     return secondDigit === d2;
 }
 
+// =====================================================================================
+
+// calculateDigit Function
 function calculateDigit(digits) {
     let multiplier = 2;
     let sum = 0;
@@ -57,4 +58,7 @@ function calculateDigit(digits) {
     return remainder < 2 ? 0 : 11 - remainder;
 }
 
+// =====================================================================================
+
+// Export
 module.exports = validateCNPJ;

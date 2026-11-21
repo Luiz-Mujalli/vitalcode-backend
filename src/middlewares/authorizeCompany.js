@@ -1,6 +1,10 @@
+// Imports
 const Company = require('../models/Company');
 const CompanyMembership = require('../models/CompanyMembership');
 
+// =====================================================================================
+
+// Main Function
 function authorizeCompany(allowedRoles = []) {
     if (!Array.isArray(allowedRoles) || !allowedRoles.every(role => typeof role === 'string')) {
         throw new TypeError(
@@ -63,4 +67,7 @@ function authorizeCompany(allowedRoles = []) {
     };
 }
 
+// =====================================================================================
+
+// Export
 module.exports = authorizeCompany;

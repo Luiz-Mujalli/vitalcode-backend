@@ -1,9 +1,14 @@
-const { UniqueConstraintError } = require('sequelize');
-
-const registerCompanySchema = require('../validators/registerCompanySchema');
-const registerCompanyService = require('../services/registerCompanyService');
+// Imports - Método myCompanies
 const listMyCompaniesService = require('../services/listMyCompaniesService');
 
+// Imports - Método register
+const { UniqueConstraintError } = require('sequelize');
+const registerCompanySchema = require('../validators/registerCompanySchema');
+const registerCompanyService = require('../services/registerCompanyService');
+
+// ======================================================================================================
+
+// Método myCompanies
 exports.myCompanies = async (req, res) => {
     try {
         const companies = await listMyCompaniesService(req.user.id);
@@ -19,8 +24,10 @@ exports.myCompanies = async (req, res) => {
     }
 };
 
+// ======================================================================================================
+
+// Método register
 exports.register = async (req, res) => {
-    // DATA VALIDATION
     const validation = registerCompanySchema.safeParse(req.body);
 
     if (!validation.success) {
@@ -34,7 +41,6 @@ exports.register = async (req, res) => {
     }
 
     try {
-        // 2. EXECUTE REGISTER
         const result = await registerCompanyService(validation.data);
 
         return res.status(201).json({
@@ -42,14 +48,12 @@ exports.register = async (req, res) => {
             data: result
         });
     } catch (error) {
-        // UNIQUE ERROR TREATMENT
         if (error instanceof UniqueConstraintError) {
             return res.status(409).json({
                 error: 'CNPJ ou e-mail já cadastrado'
             });
         }
 
-        // UNEXPECTED ERROR TREATMENT
         console.error('Erro ao cadastrar empresa:', error);
 
         return res.status(500).json({

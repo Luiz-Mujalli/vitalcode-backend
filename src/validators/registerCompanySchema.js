@@ -1,6 +1,10 @@
+// Imports
 const { z } = require('zod');
 const validateCNPJ = require('./cnpjValidator');
 
+// =====================================================================================
+
+// Main Schema
 const registerCompanySchema = z.object({
     company: z.object({
         nome: z.string().trim().min(2, 'Nome da empresa é obrigatório'),
@@ -27,4 +31,7 @@ const registerCompanySchema = z.object({
     })
 }).strict();
 
+// =====================================================================================
+
+// Export
 module.exports = registerCompanySchema;

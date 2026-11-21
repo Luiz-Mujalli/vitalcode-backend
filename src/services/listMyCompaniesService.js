@@ -1,5 +1,9 @@
+// Imports
 const getActiveMembershipService = require('./getActiveMembershipsService');
 
+// =====================================================================================
+
+// Main Function
 async function listMyCompaniesService(userId) {
     const memberships = await getActiveMembershipService(userId);
 
@@ -14,4 +18,7 @@ async function listMyCompaniesService(userId) {
     }));
 }
 
+// =====================================================================================
+
+// Export
 module.exports = listMyCompaniesService;

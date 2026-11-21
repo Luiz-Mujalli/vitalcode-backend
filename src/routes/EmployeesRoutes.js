@@ -1,11 +1,17 @@
+// Import Config
 const { Router } = require('express');
-
 const route = Router();
 
+// Import Controller
 const EmployeesController = require('../controllers/EmployeesController');
+
+// Imports Middlewares
 const authMiddleware = require('../middlewares/authMiddleware');
 const authorizeCompany = require('../middlewares/authorizeCompany');
 
+// ==================================================================================
+
+// Rotas GET
 route.get('/companies/:companyId/employees',
     authMiddleware,
     authorizeCompany(['admin']),
@@ -18,4 +24,7 @@ route.get('/companies/:companyId/employees/:employeeId',
     EmployeesController.show
 );
 
+// =====================================================================================
+
+// Export
 module.exports = route;

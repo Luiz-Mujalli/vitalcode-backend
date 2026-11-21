@@ -1,4 +1,4 @@
-// IMPORTS
+// Imports
 const express = require('express');
 const app = express();
 const HealthRoutes = require('./routes/HealthRoutes');
@@ -7,15 +7,23 @@ const AuthRoutes = require('./routes/AuthRoutes');
 const EmployeesRoutes = require('./routes/EmployeesRoutes');
 const InvitationsRoutes = require('./routes/InvitationsRoutes');
 
-// MIDDLEWARES
+// =====================================================================================
+
+
+// Middlewares
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// ROTAS
+// =====================================================================================
+
+// Routes
 app.use(HealthRoutes);
 app.use(CompaniesRoutes);
 app.use(AuthRoutes);
 app.use(EmployeesRoutes);
 app.use(InvitationsRoutes);
 
+// =====================================================================================
+
+// Export
 module.exports = app;

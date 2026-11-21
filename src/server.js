@@ -1,14 +1,23 @@
+// Config
 require('dotenv').config();
-
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
     throw new Error('JWT_SECRET não configurado adequadamente');
 }
 
+// =====================================================================================
+
+// Imports
 const app = require('./app');
 const database = require('./database/index');
 
+// =====================================================================================
+
+// PORT
 const PORT = process.env.PORT || 3000;
 
+// =====================================================================================
+
+// Main Function
 async function startServer() {
     try {
         await database.authenticate();
@@ -25,4 +34,7 @@ async function startServer() {
     }
 };
 
+// =====================================================================================
+
+// Executing Function
 startServer();

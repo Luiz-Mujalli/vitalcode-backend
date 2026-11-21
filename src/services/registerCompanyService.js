@@ -7,11 +7,10 @@ const { hashPassword } = require('./passwordService');
 async function registerCompanyService(data) {
     const { company, admin } = data;
 
-    // HASH BEFORE INITIALIZATION
     const passwordHash = await hashPassword(admin.password);
 
     const result = await database.connection.transaction(async (transaction) => {
-        // CREATING COMPANY
+
         const newCompany = await Company.create(
             {
                 nome: company.nome,
@@ -21,7 +20,6 @@ async function registerCompanyService(data) {
             { transaction }
         );
 
-        // 2. CREATING ADMIN
         const newUser = await User.create(
             {
                 nome: admin.nome,
@@ -34,7 +32,6 @@ async function registerCompanyService(data) {
             { transaction }
         );
 
-        // 3. VINCULATE EMPLOYEE TO COMPANY
         const membership = await CompanyMembership.create(
             {
                 company_id: newCompany.id,
@@ -45,7 +42,6 @@ async function registerCompanyService(data) {
             { transaction }
         );
 
-        // SAFE DATA RETURN
         return {
             company: {
                 id: newCompany.id,

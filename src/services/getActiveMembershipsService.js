@@ -1,6 +1,10 @@
+// Imports
 const Company = require('../models/Company');
 const CompanyMembership = require('../models/CompanyMembership');
 
+// =====================================================================================
+
+// Main Function
 async function getActiveMembershipService(userId) {
     const memberships = await CompanyMembership.findAll({
         where: {
@@ -20,4 +24,7 @@ async function getActiveMembershipService(userId) {
     return memberships;
 }
 
+// =====================================================================================
+
+// Export
 module.exports = getActiveMembershipService;
