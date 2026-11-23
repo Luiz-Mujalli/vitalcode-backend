@@ -4,6 +4,10 @@ const listCompanyEmployeesService = require('../services/listCompanyEmployeesSer
 // Import - Método show
 const getCompanyEmployeeService = require('../services/getCompanyEmployeeService');
 
+// Import Método clinicalStatus
+const getEmployeeClinicalStatusService = require(
+    '../services/getEmployeeClinicalStatusService'
+);
 // ======================================================================================================
 
 // Método index
@@ -71,6 +75,38 @@ exports.show = async (req, res) => {
 
         return res.status(500).json({
             error: 'Erro interno ao consultar funcionário'
+        });
+    }
+};
+
+// ======================================================================================================
+
+// Método clinicalStatus
+exports.clinicalStatus = async (req, res) => {
+    try {
+        const result = await getEmployeeClinicalStatusService({
+            employeeId: req.params.employeeId,
+            companyId: req.company.id
+        });
+
+        return res.status(200).json({
+            data: result
+        });
+
+    } catch (error) {
+        if ([400, 404].includes(error.statusCode)) {
+            return res.status(error.statusCode).json({
+                error: error.message
+            });
+        }
+
+        console.error(
+            'Erro ao consultar status clínico:',
+            error
+        );
+
+        return res.status(500).json({
+            error: 'Erro interno ao consultar status clínico'
         });
     }
 };

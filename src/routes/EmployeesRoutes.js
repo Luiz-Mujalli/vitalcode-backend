@@ -24,6 +24,13 @@ route.get('/companies/:companyId/employees/:employeeId',
     EmployeesController.show
 );
 
+route.get(
+    '/companies/:companyId/employees/:employeeId/clinical-status',
+    authMiddleware,
+    authorizeCompany(['admin']),
+    EmployeesController.clinicalStatus
+);
+
 // =====================================================================================
 
 // Export

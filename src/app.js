@@ -6,6 +6,7 @@ const CompaniesRoutes = require('./routes/CompaniesRoutes');
 const AuthRoutes = require('./routes/AuthRoutes');
 const EmployeesRoutes = require('./routes/EmployeesRoutes');
 const InvitationsRoutes = require('./routes/InvitationsRoutes');
+const ClinicalProfilesRoutes = require('./routes/ClinicalProfilesRoutes');
 
 // =====================================================================================
 
@@ -22,6 +23,7 @@ app.use(CompaniesRoutes);
 app.use(AuthRoutes);
 app.use(EmployeesRoutes);
 app.use(InvitationsRoutes);
+app.use(ClinicalProfilesRoutes);
 
 // =====================================================================================
 
