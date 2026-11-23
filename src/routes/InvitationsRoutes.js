@@ -3,7 +3,7 @@ const { Router } = require('express');
 const route = Router();
 
 // Import Controller
-const InvitationsController = require('../controllers/InvitationsController');
+const InvitationsController = require('../controllers/invitations/InvitationsController');
 
 // Imports Middlewares
 const authMiddleware = require('../middlewares/authMiddleware');

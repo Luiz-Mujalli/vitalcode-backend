@@ -1,5 +1,5 @@
 // Imports
-const getActiveMembershipService = require('./getActiveMembershipsService');
+const getActiveMembershipService = require('../employees/getActiveMembershipsService');
 
 // =====================================================================================
 

@@ -3,12 +3,12 @@ const crypto = require('crypto');
 
 const { Op, Transaction } = require('sequelize');
 
-const { connection: sequelize } = require('../database');
+const { connection: sequelize } = require('../../database');
 
-const Company = require('../models/Company');
-const Invitation = require('../models/Invitation');
-const User = require('../models/User');
-const CompanyMembership = require('../models/CompanyMembership');
+const Company = require('../../models/Company');
+const Invitation = require('../../models/Invitation');
+const User = require('../../models/User');
+const CompanyMembership = require('../../models/CompanyMembership');
 
 // =====================================================================================
 

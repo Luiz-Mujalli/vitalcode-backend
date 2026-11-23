@@ -2,29 +2,29 @@
 // Imports Método Store
 const {
     createClinicalProfileSchema
-} = require('../validators/createClinicalProfileSchema');
+} = require('../../validators/clinicalProfile/createClinicalProfileSchema');
 
 const createClinicalProfileService = require(
-    '../services/createClinicalProfileService'
+    '../../services/clinicalProfile/createClinicalProfileService'
 );
 
 // Imports Método Show
 const getMyClinicalProfileService = require(
-    '../services/getMyClinicalProfileService'
+    '../../services/clinicalProfile/getMyClinicalProfileService'
 );
 
 // Imports Método Update
 const {
     updateClinicalProfileSchema
-} = require('../validators/createClinicalProfileSchema');
+} = require('../../validators/clinicalProfile/createClinicalProfileSchema');
 
 const updateClinicalProfileService = require(
-    '../services/updateClinicalProfileService'
+    '../../services/clinicalProfile/updateClinicalProfileService'
 );
 
 // Imports Método Status
 const getClinicalProfileStatusService = require(
-    '../services/getClinicalProfileStatusService'
+    '../../services/clinicalProfile/getClinicalProfileStatusService'
 );
 
 // ===============================================================================

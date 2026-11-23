@@ -1,5 +1,5 @@
 
-const validateCNPJ = require('../validators/cnpjValidator');
+const validateCNPJ = require('../validators/companies/cnpjValidator');
 
 const tests = [
     ['11.222.333/0001-81', true],

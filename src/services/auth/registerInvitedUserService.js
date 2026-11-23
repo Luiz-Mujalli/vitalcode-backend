@@ -2,13 +2,13 @@
 const crypto = require('crypto');
 const { Transaction, UniqueConstraintError } = require('sequelize');
 
-const { connection: sequelize } = require('../database');
+const { connection: sequelize } = require('../../database');
 
-const Invitation = require('../models/Invitation');
-const Company = require('../models/Company');
-const User = require('../models/User');
+const Invitation = require('../../models/Invitation');
+const Company = require('../../models/Company');
+const User = require('../../models/User');
 
-const { hashPassword } = require('../services/passwordService');
+const { hashPassword } = require('./passwordService');
 
 // =====================================================================================
 

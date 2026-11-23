@@ -1,12 +1,12 @@
 // Import - Método index
-const listCompanyEmployeesService = require('../services/listCompanyEmployeesService');
+const listCompanyEmployeesService = require('../../services/employees/listCompanyEmployeesService');
 
 // Import - Método show
-const getCompanyEmployeeService = require('../services/getCompanyEmployeeService');
+const getCompanyEmployeeService = require('../../services/employees/getCompanyEmployeeService');
 
 // Import Método clinicalStatus
 const getEmployeeClinicalStatusService = require(
-    '../services/getEmployeeClinicalStatusService'
+    '../../services/clinicalProfile/getEmployeeClinicalStatusService'
 );
 // ======================================================================================================
 

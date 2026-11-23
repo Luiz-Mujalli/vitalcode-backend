@@ -3,7 +3,7 @@ const { Router } = require('express');
 const route = Router();
 
 // Import Controller
-const CompaniesController = require('../controllers/CompaniesController');
+const CompaniesController = require('../controllers/companies/CompaniesController');
 
 // Import Middleware
 const authMiddleware = require('../middlewares/authMiddleware');

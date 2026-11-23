@@ -1,10 +1,10 @@
 // Imports - Método myCompanies
-const listMyCompaniesService = require('../services/listMyCompaniesService');
+const listMyCompaniesService = require('../../services/companies/listMyCompaniesService');
 
 // Imports - Método register
 const { UniqueConstraintError } = require('sequelize');
-const registerCompanySchema = require('../validators/registerCompanySchema');
-const registerCompanyService = require('../services/registerCompanyService');
+const registerCompanySchema = require('../../validators/companies/registerCompanySchema');
+const registerCompanyService = require('../../services/companies/registerCompanyService');
 
 // ======================================================================================================
 

@@ -1,4 +1,4 @@
-const { hashPassword, verifyPassword } = require('../services/passwordService');
+const { hashPassword, verifyPassword } = require('../services/auth/passwordService');
 
 // PASSWORDS
 const correctPassword = 'TestandoUmaSenhaVálida123!';

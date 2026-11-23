@@ -1,6 +1,6 @@
 // Imports
-const CompanyMembership = require('../models/CompanyMembership');
-const User = require('../models/User');
+const CompanyMembership = require('../../models/CompanyMembership');
+const User = require('../../models/User');
 
 // =====================================================================================
 

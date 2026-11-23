@@ -5,11 +5,11 @@ require('dotenv').config();
 
 // Imports - Método login
 const jwt = require('jsonwebtoken');
-const loginSchema = require('../validators/loginSchema');
-const authService = require('../services/authService');
+const loginSchema = require('../../validators/auth/loginSchema');
+const authService = require('../../services/auth/authService');
 
 // Imports - Método me
-const getAuthenticatedUserService = require('../services/getAuthenticatedUserService');
+const getAuthenticatedUserService = require('../../services/employees/getAuthenticatedUserService');
 
 // ===========================================================================================================
 

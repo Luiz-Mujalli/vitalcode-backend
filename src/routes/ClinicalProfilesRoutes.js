@@ -5,7 +5,7 @@ const route = Router();
 
 // Import Controller
 const ClinicalProfilesController = require(
-    '../controllers/ClinicalProfilesController'
+    '../controllers/clinicalProfile/ClinicalProfilesController'
 );
 
 

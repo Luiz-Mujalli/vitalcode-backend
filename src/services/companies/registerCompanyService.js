@@ -1,8 +1,8 @@
-const database = require('../database');
-const Company = require('../models/Company');
-const User = require('../models/User');
-const CompanyMembership = require('../models/CompanyMembership');
-const { hashPassword } = require('./passwordService');
+const database = require('../../database');
+const Company = require('../../models/Company');
+const User = require('../../models/User');
+const CompanyMembership = require('../../models/CompanyMembership');
+const { hashPassword } = require('../auth/passwordService');
 
 async function registerCompanyService(data) {
     const { company, admin } = data;

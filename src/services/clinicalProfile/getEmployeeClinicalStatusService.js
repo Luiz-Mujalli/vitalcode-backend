@@ -1,14 +1,14 @@
 // Imports
 const CompanyMembership = require(
-    '../models/CompanyMembership'
+    '../../models/CompanyMembership'
 );
 
 const ClinicalProfile = require(
-    '../models/ClinicalProfile'
+    '../../models/ClinicalProfile'
 );
 
 const isClinicalProfileComplete = require(
-    '../utils/isClinicalProfileComplete'
+    '../../utils/isClinicalProfileComplete'
 );
 
 // ===============================================================================

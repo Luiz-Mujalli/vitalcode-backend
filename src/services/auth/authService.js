@@ -1,6 +1,6 @@
 // Imports
-const User = require('../models/User');
-const getActiveMembershipsService = require('./getActiveMembershipsService');
+const User = require('../../models/User');
+const getActiveMembershipsService = require('../employees/getActiveMembershipsService');
 const { verifyPassword } = require('./passwordService');
 
 // =====================================================================================

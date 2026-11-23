@@ -3,7 +3,7 @@ const { Router } = require('express');
 const route = Router();
 
 // Import Controller
-const AuthController = require('../controllers/AuthController');
+const AuthController = require('../controllers/auth/AuthController');
 
 // Import Middleware
 const authMiddleware = require('../middlewares/authMiddleware');

@@ -1,9 +1,9 @@
 // Imports
 const { Op } = require('sequelize');
 
-const Invitation = require('../models/Invitation');
-const Company = require('../models/Company');
-const User = require('../models/User');
+const Invitation = require('../../models/Invitation');
+const Company = require('../../models/Company');
+const User = require('../../models/User');
 
 // =====================================================================================
 

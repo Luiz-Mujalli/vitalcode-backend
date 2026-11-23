@@ -1,8 +1,8 @@
 // Imports
-const User = require('../models/User');
-const ClinicalProfile = require('../models/ClinicalProfile');
+const User = require('../../models/User');
+const ClinicalProfile = require('../../models/ClinicalProfile');
 const isClinicalProfileComplete = require(
-    '../utils/isClinicalProfileComplete'
+    '../../utils/isClinicalProfileComplete'
 );
 
 // ===============================================================================

@@ -1,23 +1,23 @@
 // Imports - Método store
-const createInvitationSchema = require('../validators/createInvitationSchema');
-const createInvitationService = require('../services/createInvitationService');
+const createInvitationSchema = require('../../validators/invitations/createInvitationSchema');
+const createInvitationService = require('../../services/invitations/createInvitationService');
 
 // Imports - Método accept
-const acceptInvitationSchema = require('../validators/acceptInvitationSchema');
-const acceptInvitationService = require('../services/acceptInvitationService');
+const acceptInvitationSchema = require('../../validators/invitations/acceptInvitationSchema');
+const acceptInvitationService = require('../../services/invitations/acceptInvitationService');
 
 // Imports - Método register
-const registerInvitedUserSchema = require('../validators/registerInvitedUserSchema');
-const registerInvitedUserService = require('../services/registerInvitedUserService');
+const registerInvitedUserSchema = require('../../validators/auth/registerInvitedUserSchema');
+const registerInvitedUserService = require('../../services/auth/registerInvitedUserService');
 
 // Imports - Método myInvitations
-const listMyInvitationService = require('../services/listMyInvitationService');
+const listMyInvitationService = require('../../services/invitations/listMyInvitationService');
 
 // Import - Método acceptById
-const acceptInvitationByIdService = require('../services/acceptInvitationByIdService');
+const acceptInvitationByIdService = require('../../services/invitations/acceptInvitationByIdService');
 
 // Import - Método decline
-const declineInvitationService = require('../services/declineInvitationService');
+const declineInvitationService = require('../../services/invitations/declineInvitationService');
 
 // ============================================================================================
 

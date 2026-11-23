@@ -3,7 +3,7 @@ const { Router } = require('express');
 const route = Router();
 
 // Import Controller
-const EmployeesController = require('../controllers/EmployeesController');
+const EmployeesController = require('../controllers/employees/EmployeesController');
 
 // Imports Middlewares
 const authMiddleware = require('../middlewares/authMiddleware');
