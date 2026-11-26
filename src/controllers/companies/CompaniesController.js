@@ -16,7 +16,7 @@ exports.myCompanies = async (req, res) => {
         return res.status(200).json({ companies });
 
     } catch (error) {
-        console.error('Erro ao procurar empresas:', error);
+        console.error('Erro ao procurar empresas:', error.name);
 
         return res.status(500).json({
             error: 'Erro ao encontrar empresas'
@@ -54,7 +54,7 @@ exports.register = async (req, res) => {
             });
         }
 
-        console.error('Erro ao cadastrar empresa:', error);
+        console.error('Erro ao cadastrar empresa:', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao cadastrar empresa'

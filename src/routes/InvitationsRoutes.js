@@ -6,9 +6,9 @@ const route = Router();
 const InvitationsController = require('../controllers/invitations/InvitationsController');
 
 // Imports Middlewares
-const authMiddleware = require('../middlewares/authMiddleware');
-const authorizeCompany = require('../middlewares/authorizeCompany');
-const validateInvitationId = require('../middlewares/validateInvitationId');
+const authMiddleware = require('../middlewares/auth/authMiddleware');
+const authorizeCompany = require('../middlewares/auth/authorizeCompany');
+const validateInvitationId = require('../middlewares/validators/validateInvitationId');
 
 // ====================================================================================
 

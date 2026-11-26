@@ -6,7 +6,7 @@ const route = Router();
 const CompaniesController = require('../controllers/companies/CompaniesController');
 
 // Import Middleware
-const authMiddleware = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middlewares/auth/authMiddleware');
 
 // =====================================================================================
 

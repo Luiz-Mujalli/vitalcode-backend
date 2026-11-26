@@ -11,7 +11,7 @@ const ClinicalProfilesController = require(
 
 // Import Middlewares
 const authMiddleware = require(
-    '../middlewares/authMiddleware'
+    '../middlewares/auth/authMiddleware'
 );
 
 // =====================================================================================

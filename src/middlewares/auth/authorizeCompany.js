@@ -1,6 +1,6 @@
 // Imports
-const Company = require('../models/Company');
-const CompanyMembership = require('../models/CompanyMembership');
+const Company = require('../../models/Company');
+const CompanyMembership = require('../../models/CompanyMembership');
 
 // =====================================================================================
 
@@ -58,7 +58,7 @@ function authorizeCompany(allowedRoles = []) {
             return next();
 
         } catch (error) {
-            console.error('Erro na autorização da empresa: ', error);
+            console.error('Erro na autorização da empresa: ', error.name);
 
             return res.status(500).json({
                 error: 'Erro interno de autorização'

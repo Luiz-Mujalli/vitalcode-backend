@@ -1,6 +1,6 @@
 // Imports
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../../models/User');
 
 // =====================================================================================
 
@@ -59,7 +59,7 @@ async function authMiddleware(req, res, next) {
             });
         }
 
-        console.error('Erro no middleware de autenticação: ', error);
+        console.error('Erro no middleware de autenticação: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno de autenticação'

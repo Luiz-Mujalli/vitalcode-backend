@@ -6,10 +6,20 @@ const route = Router();
 const EmployeesController = require('../controllers/employees/EmployeesController');
 
 // Imports Middlewares
-const authMiddleware = require('../middlewares/authMiddleware');
-const authorizeCompany = require('../middlewares/authorizeCompany');
+const authMiddleware = require('../middlewares/auth/authMiddleware');
+const authorizeCompany = require('../middlewares/auth/authorizeCompany');
 
 // ==================================================================================
+
+// Rotas PATCH
+route.patch(
+    '/companies/:companyId/employees/:employeeId/deactivate',
+    authMiddleware,
+    authorizeCompany(['admin']),
+    EmployeesController.deactivate
+);
+
+// =====================================================================================
 
 // Rotas GET
 route.get('/companies/:companyId/employees',

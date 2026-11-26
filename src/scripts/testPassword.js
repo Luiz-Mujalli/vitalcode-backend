@@ -20,7 +20,7 @@ async function testPassword() {
         console.log('Hashes Diferentes: ', hashPassword1 !== hashPassword2);
     } catch (e) {
         // ERRORS
-        console.error('Erro ao verificar senhas: ', e);
+        console.error('Erro ao verificar senhas: ', e.name);
         process.exitCode = 1;
     }
 }

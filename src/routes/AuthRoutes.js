@@ -6,12 +6,15 @@ const route = Router();
 const AuthController = require('../controllers/auth/AuthController');
 
 // Import Middleware
-const authMiddleware = require('../middlewares/authMiddleware');
+const authMiddleware = require('../middlewares/auth/authMiddleware');
+const authRateLimiter = require(
+    '../middlewares/rateLimit/authRateLimiter'
+);
 
 // =====================================================================================
 
 // Rotas POST
-route.post('/auth/login', AuthController.login)
+route.post('/auth/login', authRateLimiter, AuthController.login)
 
 // =====================================================================================
 

@@ -54,7 +54,7 @@ exports.store = async (req, res) => {
             });
         }
 
-        console.error('Erro ao criar convite: ', error);
+        console.error('Erro ao criar convite: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao criar convite'
@@ -96,7 +96,7 @@ exports.accept = async (req, res) => {
             });
         }
 
-        console.error('Erro ao aceitar convite: ', error);
+        console.error('Erro ao aceitar convite: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao aceitar convite'
@@ -135,7 +135,7 @@ exports.register = async (req, res) => {
             });
         }
 
-        console.error('Erro ao cadastrar funcionário convidado: ', error);
+        console.error('Erro ao cadastrar funcionário convidado: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao cadastrar funcionário'
@@ -164,7 +164,7 @@ exports.myInvitations = async (req, res) => {
             });
         }
 
-        console.error('Erro ao listar convites: ', error);
+        console.error('Erro ao listar convites: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao consultar convites'
@@ -193,7 +193,7 @@ exports.acceptById = async (req, res) => {
             });
         }
 
-        console.error('Erro ao aceitar convite por ID: ', error);
+        console.error('Erro ao aceitar convite por ID: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao aceitar convite'
@@ -222,7 +222,7 @@ exports.decline = async (req, res) => {
             });
         }
 
-        console.error('Erro ao recustar convite: ', error);
+        console.error('Erro ao recustar convite: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao recusar convite'

@@ -4,10 +4,16 @@ const listCompanyEmployeesService = require('../../services/employees/listCompan
 // Import - Método show
 const getCompanyEmployeeService = require('../../services/employees/getCompanyEmployeeService');
 
-// Import Método clinicalStatus
+// Import - Método clinicalStatus
 const getEmployeeClinicalStatusService = require(
     '../../services/clinicalProfile/getEmployeeClinicalStatusService'
 );
+
+// Import - Método deactivate
+const deactivateEmployeeService = require(
+    '../../services/employees/deactivateEmployeeService'
+);
+
 // ======================================================================================================
 
 // Método index
@@ -34,7 +40,7 @@ exports.index = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao listar funcionários: ', error);
+        console.error('Erro ao listar funcionários: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao listar funcionários'
@@ -71,7 +77,7 @@ exports.show = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao consultar funcionário: ', error);
+        console.error('Erro ao consultar funcionário: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao consultar funcionário'
@@ -102,11 +108,59 @@ exports.clinicalStatus = async (req, res) => {
 
         console.error(
             'Erro ao consultar status clínico:',
-            error
+            error.name
         );
 
         return res.status(500).json({
             error: 'Erro interno ao consultar status clínico'
+        });
+    }
+};
+
+
+// =====================================================================================
+
+// Método deactivate
+exports.deactivate = async (req, res) => {
+
+    const employeeId = Number(req.params.employeeId);
+
+    if (
+        !/^\d+$/.test(req.params.employeeId) ||
+        !Number.isSafeInteger(employeeId) ||
+        employeeId <= 0
+    ) {
+        return res.status(400).json({
+            error: 'Identificador do funcionário inválido'
+        });
+    }
+
+    try {
+        const result = await deactivateEmployeeService({
+            actorUserId: req.user.id,
+            companyId: req.company.id,
+            employeeId
+        });
+
+        return res.status(200).json({
+            message: 'Funcionário desativado com sucesso',
+            data: result
+        });
+
+    } catch (error) {
+        if (error.statusCode) {
+            return res.status(error.statusCode).json({
+                error: error.message
+            });
+        }
+
+        console.error(
+            'Erro ao desativar funcionário:',
+            error.name
+        );
+
+        return res.status(500).json({
+            error: 'Erro interno ao desativar funcionário'
         });
     }
 };

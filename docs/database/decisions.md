@@ -1,137 +1,177 @@
-# Decisões de Modelagem e Persistência
+# VitalCode | Decisões de Engenharia
 
-Este documento registra as principais decisões técnicas adotadas na modelagem inicial do banco de dados da VitalCode.
+**Registro de decisões arquiteturais (ADR), modelagem relacional e invariantes de negócio.**
 
-## 1. Separação entre usuários e empresas
+[Arquitetura](../architecture.md) · [Esquema relacional](schema.dbml) · [README](../../README.md)
 
-**Decisão:** manter as entidades `users` e `companies` independentes, utilizando `company_memberships` para representar os vínculos profissionais.
+## Sobre este registro
 
-**Justificativa:** separar a identidade do usuário de seu relacionamento com uma empresa evita misturar informações pessoais com atributos específicos do vínculo, como cargo, papel e status.
+Este documento consolida as decisões que orientam a evolução do backend da VitalCode. Cada registro apresenta contexto, decisão e consequências, incluindo os compromissos técnicos assumidos. Os identificadores são estáveis e preservam a numeração das decisões originais. Uma decisão aceita representa uma escolha de arquitetura, não uma certificação de segurança ou conclusão de todas as medidas operacionais relacionadas.
 
-**Consequência:** as permissões empresariais devem ser verificadas considerando o vínculo correspondente, e não apenas a identidade global do usuário.
+## ADR-001 — Separação entre identidade e contexto empresarial
 
-## 2. Perfil clínico individual
+**Contexto:** atributos profissionais variam entre empresas, enquanto a identidade pertence à plataforma.
 
-**Decisão:** estabelecer um relacionamento de um para zero ou um entre `users` e `clinical_profiles`.
+**Decisão:** manter `users` e `companies` independentes e representar a associação em `company_memberships`, incluindo cargo, papel e estado.
 
-**Justificativa:** as informações clínicas pertencem ao indivíduo e não devem ser duplicadas para cada vínculo empresarial.
+**Consequências:** evita duplicação de identidades e permite múltiplos vínculos. Em contrapartida, operações empresariais precisam verificar o vínculo específico; um papel global não é suficiente.
 
-**Consequência:** cada usuário poderá possuir no máximo um perfil clínico, cuja existência e completude serão tratadas separadamente.
+## ADR-002 — Perfil clínico individual
 
-## 3. Preenchimento progressivo da ficha clínica
+**Contexto:** informações clínicas pertencem ao indivíduo, não ao empregador.
 
-**Decisão:** permitir valores nulos nos campos clínicos durante o preenchimento inicial.
+**Decisão:** estabelecer relação de um para zero ou um entre `users` e `clinical_profiles`, com unicidade de `user_id`.
 
-**Justificativa:** o usuário pode iniciar o cadastro sem possuir imediatamente todas as informações necessárias.
+**Consequências:** evita fichas divergentes entre empresas e preserva a ficha após desligamento. Alterações na ficha afetam as consultas emergenciais de todos os vínculos elegíveis.
 
-**Consequência:** a ausência de valores no banco não representa automaticamente uma ficha completa. A aplicação deverá validar explicitamente os campos essenciais antes de autorizar a ativação da credencial emergencial.
+## ADR-003 — Preenchimento progressivo e completude explícita
 
-## 4. Separação entre dados clínicos e administração empresarial
+**Contexto:** nem todas as informações estão disponíveis no cadastro inicial.
 
-**Decisão:** o painel administrativo deverá consultar o status de preenchimento da ficha, sem disponibilizar seu conteúdo clínico.
+**Decisão:** permitir campos clínicos nulos e centralizar a avaliação de completude em `isClinicalProfileComplete`. Exigir registros explícitos de alergias, medicamentos, doenças, cirurgias e contato de emergência; tipo sanguíneo permanece opcional.
 
-**Justificativa:** o gerenciamento de funcionários não exige acesso irrestrito a informações médicas.
+**Consequências:** existência da ficha não implica elegibilidade para emissão. Campos ausentes não significam ausência de condição clínica. A regra precisa ser aplicada também na consulta emergencial.
 
-**Consequência:** a API deverá aplicar regras específicas de autorização e minimizar os dados retornados em cada contexto.
+## ADR-004 — Minimização de dados na administração empresarial
 
-A conclusão da ficha clínica não representa aptidão ocupacional nem autorização para executar atividades profissionais.
+**Contexto:** gestão de colaboradores não exige acesso irrestrito a informações clínicas.
 
-## 5. Convites com tokens protegidos
+**Decisão:** disponibilizar informações administrativas e status de completude, sem retornar o conteúdo clínico nesses endpoints.
 
-**Decisão:** armazenar o hash do token de convite, em vez do token original.
+**Consequências:** reduz exposição desnecessária e separa gestão profissional de informação de saúde. Completude não representa aptidão ocupacional. A rota pública emergencial possui uma fronteira de acesso distinta.
 
-**Justificativa:** reduzir o risco de exposição de tokens válidos em caso de acesso indevido ao banco de dados.
+## ADR-005 — Proteção dos tokens de convite
 
-**Consequência:** a aplicação deverá gerar tokens criptograficamente seguros, validar sua expiração e impedir reutilização após a aceitação.
+**Contexto:** armazenar tokens originais permitiria sua reutilização em caso de exposição dos registros.
 
-## 6. Credenciais emergenciais vinculadas ao vínculo profissional
+**Decisão:** gerar tokens aleatórios criptograficamente seguros e persistir somente o hash SHA-256, associado ao prazo e estado do convite.
 
-**Decisão:** associar `emergency_credentials` a `company_memberships`, permitindo o histórico de credenciais de cada vínculo.
+**Consequências:** o token original não é recuperável pelo fluxo normal de consulta. Aceitação exige convite pendente, válido e destinatário correspondente. O fluxo de entrega e a verificação de propriedade do e-mail precisam evoluir.
 
-**Justificativa:** a credencial representa um mecanismo de acesso emergencial associado ao contexto profissional do usuário.
+## ADR-006 — Credenciais vinculadas ao contexto profissional
 
-**Consequência:** será necessário controlar emissão, ativação e revogação, garantindo que cada vínculo possua no máximo uma credencial ativa.
+**Contexto:** uma credencial precisa representar um vínculo específico e permitir substituição independente em caso de perda.
 
-Credenciais revogadas não deverão ser reativadas.
+**Decisão:** associar `emergency_credentials` a `company_memberships`, manter histórico e permitir até duas credenciais ativas por vínculo, para uso principal e reserva. Admins e employees elegíveis podem emitir credenciais próprias.
 
-## 7. Controle de acesso emergencial
+**Consequências:** tokens independentes permitem revogar apenas o crachá comprometido. O limite é aplicado por transação e locks, não por uma restrição única no banco. Credenciais revogadas nunca são reativadas. Não há obrigação técnica de emitir ambas simultaneamente.
 
-**Decisão:** utilizar um conjunto padronizado de informações essenciais para a visualização emergencial.
+## ADR-007 — Consulta emergencial por credencial de posse
 
-**Justificativa:** a disponibilização das informações necessárias ao atendimento não deve depender da configuração individual de visibilidade de cada campo crítico.
+**Contexto:** exigir uma conta do socorrista cria atrito no acesso emergencial.
 
-**Consequência:** a aplicação deverá definir explicitamente quais dados poderão ser exibidos, validar a credencial e adotar mecanismos de proteção contra acessos abusivos.
+**Decisão:** permitir consulta pública mediante token válido, com resposta limitada a informações essenciais e validação dos estados da credencial, conta, empresa, vínculo e ficha.
 
-## 8. Auditoria de eventos
+**Consequências:** reduz a barreira de acesso, mas qualquer portador de uma cópia válida pode consultar os dados disponibilizados. Rate limiting, cabeçalhos e auditoria reduzem riscos específicos, sem comprovar identidade ou necessidade de acesso. A adequação desse modelo para uso real exige avaliação de privacidade e segurança.
 
-**Decisão:** utilizar a entidade `audit_logs` para registrar eventos relevantes da aplicação.
+## ADR-008 — Auditoria de eventos relevantes
 
-**Justificativa:** operações sensíveis precisam ser rastreáveis para apoiar investigações, diagnóstico de problemas e controles de segurança.
+**Contexto:** operações sensíveis precisam de rastreabilidade.
 
-**Consequência:** os registros poderão identificar empresa, autor, usuário afetado, ação, recurso, origem da requisição e data do evento.
+**Decisão:** utilizar `audit_logs` com contexto empresarial, autor e alvo quando identificáveis, ação, recurso, metadados e data. Emissão, revogação e desligamento registram auditoria na mesma transação das alterações; consultas emergenciais também são auditadas.
 
-Os logs não deverão armazenar senhas, tokens originais ou conteúdo clínico sensível.
+**Consequências:** facilita investigação e correlação de eventos. A consulta pública não fornece identidade autenticada do autor. A tabela não é, por si só, um registro inviolável; retenção, controle de acesso e proteção contra alteração indevida permanecem necessários.
 
-A aplicação também deverá estabelecer controles contra alteração indevida e políticas de retenção dos registros.
+## ADR-009 — Integridade referencial na persistência
 
-## 9. Integridade referencial
+**Contexto:** validações da API não substituem garantias estruturais do banco.
 
-**Decisão:** utilizar chaves estrangeiras, índices e restrições de unicidade no banco de dados.
+**Decisão:** utilizar chaves estrangeiras, índices e restrições de unicidade conforme as migrations, complementados por validações de negócio.
 
-**Justificativa:** regras estruturais importantes devem ser protegidas também pela camada de persistência, independentemente das validações realizadas pela API.
+**Consequências:** reduz inconsistências estruturais e exige tratamento de violações de integridade. Regras dependentes de estado, como o limite de credenciais ativas, continuam sob coordenação transacional da aplicação.
 
-**Consequência:** a aplicação deverá tratar adequadamente erros de integridade e utilizar transações em operações que envolvam múltiplas entidades.
+## ADR-010 — Evolução versionada do esquema
 
-## 10. Versionamento do esquema
+**Contexto:** mudanças manuais dificultam a reprodução e a manutenção dos ambientes.
 
-**Decisão:** utilizar migrations do Sequelize para controlar alterações estruturais no banco de dados.
+**Decisão:** versionar alterações estruturais com migrations do Sequelize e manter o DBML como representação documental.
 
-**Justificativa:** manter um histórico reproduzível da evolução do esquema e evitar alterações manuais não rastreadas.
+**Consequências:** alterações futuras devem ser registradas em novas migrations, preservando o histórico aplicado. Models, migrations e DBML precisam permanecer coerentes; mudanças destrutivas exigem planejamento próprio.
 
-**Consequência:** futuras mudanças estruturais deverão ser realizadas por novas migrations, preservando o histórico já aplicado.
+## ADR-011 — Autenticação independente do vínculo
 
-## 11. Identidade global e autenticação independente de vínculos
+**Contexto:** desligamento empresarial não equivale à exclusão da identidade global.
 
-**Decisão:** permitir a autenticação de usuários ativos mesmo quando não possuem vínculos empresariais ativos.
+**Decisão:** permitir autenticação de contas ativas mesmo sem vínculos empresariais ativos.
 
-**Justificativa:** a identidade do usuário pertence à plataforma, enquanto os vínculos representam suas relações profissionais com empresas específicas.
+**Consequências:** o usuário mantém acesso às funcionalidades individuais e pode aceitar novos convites. JWT válido não concede automaticamente acesso empresarial.
 
-**Consequência:** a autenticação confirma a identidade global, mas não concede automaticamente permissões empresariais. Essas permissões devem ser verificadas separadamente para cada operação.
+## ADR-012 — Autorização contextual por vínculo e papel
 
-Essa separação também permite que usuários autenticados aceitem convites para novas empresas.
+**Contexto:** usuários podem possuir permissões distintas em empresas diferentes.
 
-## 12. Autorização baseada no contexto empresarial
+**Decisão:** aplicar `authorizeCompany` nas rotas empresariais, validando empresa ativa, vínculo ativo e papel permitido. Utilizar o contexto autorizado nas consultas e revalidar condições críticas dentro das transações.
 
-**Decisão:** utilizar um middleware de autorização que valide a empresa solicitada, o vínculo ativo e o papel permitido antes da execução de operações administrativas.
+**Consequências:** reduz risco de acesso cruzado entre empresas por identificadores conhecidos. A proteção depende da aplicação consistente desses controles em todos os endpoints; o isolamento é lógico, não físico.
 
-**Justificativa:** um usuário pode possuir papéis diferentes em empresas distintas. A autorização não deve depender de um papel global.
+## ADR-013 — Ciclo transacional de convites
 
-**Consequência:** consultas e alterações administrativas devem utilizar a empresa autorizada como referência.
+**Contexto:** criação, aceitação e recusa concorrentes podem produzir duplicidade ou transições conflitantes.
 
-A consulta individual de funcionários deve verificar o vínculo do funcionário com a empresa solicitada, evitando acesso a usuários de outras empresas por meio de identificadores conhecidos.
+**Decisão:** coordenar operações críticas com transações, locks e validações de estado. A aceitação cria ou reativa o vínculo e marca o convite como aceito atomicamente. Cadastro do convidado não implica aceitação automática.
 
-## 13. Criação e aceitação transacional de convites
+**Consequências:** convites aceitos ou recusados não podem ser reutilizados como pendentes. A validade temporal e o e-mail da conta são verificados. Testes locais cobrem cenários de concorrência, mas não demonstram ausência de todas as condições de corrida.
 
-**Decisão:** utilizar transações para coordenar a criação e a aceitação de convites empresariais.
+## ADR-014 — Restrição de privilégios em convites comuns
 
-**Justificativa:** operações simultâneas podem causar inconsistências quando verificações e alterações são realizadas sem coordenação.
+**Contexto:** dados enviados pelo cliente não devem permitir elevação de privilégios.
 
-**Consequência:** a implementação utiliza bloqueios transacionais e validações de estado para reduzir condições de corrida.
+**Decisão:** definir `employee` no servidor durante a aceitação de convites comuns, inclusive na reativação de vínculo inativo.
 
-Na aceitação, a criação ou reativação do vínculo e a atualização do convite devem ocorrer atomicamente.
+**Consequências:** convites comuns não concedem privilégios administrativos. A gestão de administradores exige fluxo próprio, incluindo proteção do último responsável ativo. O desligamento de administradores não integra o endpoint atual de funcionários.
 
-O token deve ser de uso único e somente o usuário autenticado com o e-mail correspondente ao convite pode aceitá-lo.
+## ADR-015 — Separação entre token original e hash emergencial
 
-Testes locais de concorrência foram realizados, mas a proteção completa ainda dependerá de testes automatizados e revisão dos demais fluxos de escrita.
+**Contexto:** o QR Code precisa transportar uma chave utilizável sem tornar o valor persistido uma credencial diretamente reutilizável.
 
-## 14. Restrição de privilégios na aceitação de convites
+**Decisão:** gerar token aleatório de 32 bytes, representado em hexadecimal, armazenar seu SHA-256 e utilizar o token original na URL do QR Code. Na consulta, calcular novamente o hash e buscar a correspondência.
 
-**Decisão:** convites empresariais comuns concedem exclusivamente o papel `employee`.
+**Alternativa considerada:** armazenar um token recuperável ou utilizar diretamente o hash persistido como chave de acesso. A primeira opção aumenta a superfície de proteção de segredos; a segunda torna o valor do banco reutilizável como credencial.
 
-**Justificativa:** a criação de convites não deve permitir que administradores atribuam privilégios adicionais por meio de dados enviados pelo cliente.
+**Consequências:** a URL e o QR Code são retornados na emissão, sem recuperação posterior pela listagem. Perda exige revogação e nova emissão. O hash não protege contra acesso direto às tabelas clínicas nem contra vazamento do token original em URLs ou logs.
 
-**Consequência:** o papel do vínculo é definido pelo servidor durante a aceitação.
+## ADR-016 — Revogação definitiva no desligamento
 
-Quando um vínculo inativo é reativado por convite comum, o papel é definido como `employee`, mesmo que o vínculo anterior possuísse outro papel.
+**Contexto:** reativar um vínculo não deve restaurar acesso por crachás antigos.
 
-A futura gestão de administradores deverá possuir regras próprias, incluindo a proteção contra remoção ou desativação do último administrador ativo da empresa.
+**Decisão:** desativar o vínculo, revogar todas as credenciais ativas, preencher `revoked_at` e registrar eventos de auditoria na mesma transação.
+
+**Consequências:** preserva conta e ficha clínica, invalida credenciais antigas e exige nova emissão após recontratação. Falhas na operação transacional impedem alterações parciais. A regra atual restringe desligamento a funcionários.
+
+## ADR-017 — Coordenação de operações concorrentes
+
+**Contexto:** verificações de estado e contagens isoladas podem se tornar obsoletas antes da escrita.
+
+**Decisão:** utilizar transações e locks de atualização, com `READ COMMITTED` nos fluxos de emissão e desligamento. O bloqueio da empresa antecede os demais registros nesses fluxos; o vínculo é bloqueado antes da contagem de credenciais ativas.
+
+**Consequências:** operações que seguem o protocolo compartilham uma fronteira de coordenação. A granularidade por empresa pode aumentar contenção. Novos fluxos de escrita devem respeitar a ordem de locks; testes de carga, deadlocks e concorrência ampliada permanecem necessários.
+
+## ADR-018 — Minimização de informações em logs
+
+**Contexto:** erros do ORM, consultas SQL e URLs podem conter dados sensíveis.
+
+**Decisão:** desabilitar logging SQL padrão, evitar objetos completos de erro em logs operacionais e excluir senhas, tokens originais e conteúdo clínico dos registros. Preservar eventos de auditoria com metadados necessários.
+
+**Consequências:** reduz exposição acidental, mas limita detalhes disponíveis para diagnóstico. Logger estruturado, sanitização de infraestrutura, controle de acesso e retenção devem complementar essa abordagem.
+
+## ADR-019 — Organização modular em camadas
+
+**Contexto:** o crescimento dos módulos torna diretórios técnicos planos difíceis de navegar.
+
+**Decisão:** manter a arquitetura em camadas, agrupando controllers, services e validators por domínio e middlewares por responsabilidade. Centralizar funções compartilhadas em `utils`.
+
+**Consequências:** facilita localização de regras e evolução incremental sem introduzir serviços distribuídos. Dependências entre domínios continuam exigindo disciplina para evitar acoplamento excessivo.
+
+## ADR-020 — Proteções HTTP e limites operacionais
+
+**Contexto:** a API possui endpoints autenticados e públicos com perfis de acesso diferentes.
+
+**Decisão:** aplicar Helmet, CORS com origem configurável, limites de corpo e rate limiters distintos para tráfego geral, autenticação e emergência. Respostas emergenciais incluem diretivas de cache, indexação e referência.
+
+**Consequências:** reduz classes específicas de abuso e exposição. CORS não substitui autorização; cabeçalhos não garantem confidencialidade. Contadores em memória são adequados ao ambiente local, mas exigem revisão de proxy, distribuição e disponibilidade no deploy.
+
+## Governança e evolução
+
+Novas decisões devem receber identificadores próprios. Quando uma decisão for substituída, seu histórico e a referência à sucessora devem ser preservados. Alterações em invariantes de negócio devem ser acompanhadas de revisão das migrations, contratos HTTP e testes pertinentes.
+
+A utilização com dados clínicos reais depende de validação técnica, jurídica e operacional, incluindo LGPD, segurança, disponibilidade e gestão de incidentes. Este registro descreve escolhas de engenharia do MVP, não certificação de conformidade.

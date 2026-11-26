@@ -17,7 +17,7 @@ async function createCompany() {
         if (error instanceof UniqueConstraintError) {
             console.error('CNPJ já cadastrado.');
         } else {
-            console.error('Erro Inesperado: ', error);
+            console.error('Erro Inesperado: ', error.name);
         }
 
         process.exitCode = 1;

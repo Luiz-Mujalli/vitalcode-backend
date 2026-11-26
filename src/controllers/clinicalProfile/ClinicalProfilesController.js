@@ -67,7 +67,7 @@ exports.store = async (req, res) => {
 
         console.error(
             'Erro ao criar ficha clínica:',
-            error
+            error.name
         );
 
         return res.status(500).json({
@@ -98,7 +98,7 @@ exports.show = async (req, res) => {
 
         console.error(
             'Erro ao consultar ficha clínica:',
-            error
+            error.name
         );
 
         return res.status(500).json({
@@ -147,7 +147,7 @@ exports.update = async (req, res) => {
 
         console.error(
             'Erro ao atualizar ficha clínica:',
-            error
+            error.name
         );
 
         return res.status(500).json({
@@ -179,7 +179,7 @@ exports.status = async (req, res) => {
 
         console.error(
             'Erro ao consultar status da ficha clínica:',
-            error
+            error.name
         );
 
         return res.status(500).json({

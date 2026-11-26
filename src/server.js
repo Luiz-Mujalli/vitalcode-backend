@@ -29,7 +29,7 @@ async function startServer() {
             console.log(`http://localhost:${PORT}`);
         });
     } catch (e) {
-        console.error('Erro ao iniciar a aplicação: ', e);
+        console.error('Erro ao iniciar a aplicação: ', e.name);
         process.exit(1);
     }
 };

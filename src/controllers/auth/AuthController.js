@@ -54,7 +54,7 @@ exports.login = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao realizar login: ', error);
+        console.error('Erro ao realizar login: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao realizar login'
@@ -82,7 +82,7 @@ exports.me = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao consultar usuário autenticado: ', error);
+        console.error('Erro ao consultar usuário autenticado: ', error.name);
 
         return res.status(500).json({
             error: 'Erro interno ao consultar usuário'
